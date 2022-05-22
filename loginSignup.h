@@ -12,6 +12,7 @@ using namespace std;
 void updateUser(user *data, string newPassword);
 void login(user*);
 void openKhata(user*);
+bool checkExistance(user*, person*);
 void deleteKhata(user*);
 void doTransaction(user*);
 void deleteAccount(user*);
@@ -19,12 +20,14 @@ void doOperationByName(user*);
 void doOperationByPhoneNumber(user*);
 void doOperation(user*, person*);
 void refreshAccount(user*);
+bool check(user*, person*);
 double findTotalAmount(user*, person*);
 void updateRecord(user*, person*, double);
 void displayRecordDetails(user*, person*);
 void displayPersonRecord(user*);
 void findByName(user*);
 void findByPhoneNumber(user*); 
+void printAllKhata(user*); 
 
 void signup() {
     user *data = new user();
@@ -75,16 +78,18 @@ void forgotIdPassword() {
     cout << "\n\n\t\t\t\t\t\t\t\t\tPlease Enter Following Information\n\n";
     cout << "\t\t\t\t\t\t    ------------------------------------------------------------------\n\n";
     string uName, phoneNumber;
-    cout << "\t\t\t\t\t\t\t                  -> Enter Your UserName : ";
+    cout << "\n\t\t\t\t\t\t\t\t\t\t-> Enter Your UserName : ";
     fflush(stdin);
     cin >> uName;
-    cout << "\t\t\t\t\t\t\t                  -> Enter Your PhoneNumber : ";
+    cout << "\n\t\t\t\t\t\t\t\t\t\t-> Enter Your PhoneNumber : ";
     cin >> phoneNumber;
     user *data = new user();
+    bool flag = true;
     ifstream reading("userName.txt", ios::in);
     reading.read((char*)&(*data), sizeof(*data));
     while (!reading.eof()) {
         if (!(strcmp(data->userName, uName.c_str()) || strcmp(data->phoneNumber, phoneNumber.c_str()))) {
+            flag = false;
             string newPassword = "";
             system("cls");
             cout << "\n\n\t\t\t\t\t\t\t\t\t\tAccount Found\n";
@@ -110,6 +115,12 @@ void forgotIdPassword() {
             break;
         }
         reading.read((char*)&(*data), sizeof(*data));
+    }
+    if (flag) {
+        system("cls");
+        cout << "\n\t\t\t\t\t\t\t\t\t\tAccount Not Found\n\n";
+        cout << "\n\t\t\t\t\t\t\t\t\t\tPress Any Key To Continue...";
+        char ch = getch();
     }
 }
 // --------------------------------------------------------------------------------------
@@ -153,26 +164,48 @@ void updateUser(user *data, string newPassword) {
 void login(user* data) {
     while (true) {
         system("cls");
-        cout << "Hello, " << data->name << endl;
-        cout << data->userName << "\t\tMob. No. : " << data->phoneNumber << "\t\tAmount Remaining : Rs. " << data->amount << endl;
-        string path = string(data->userName) + "/" + string(data->userName) + ".txt";
-        ifstream reading(path, ios::in);
-        person *details = new person();
-        long i = 1;
-        reading.read((char*)&(*details), sizeof(*details));
-        while (!reading.eof()) {
-            cout << i++ << ". " << details->name << " --> Rs. " << details->amount << endl;
-            reading.read((char*)&(*details), sizeof(*details));
-        }
-        reading.close();
-        cout << "\n\nTotal Amount Remaining : " << data->amount << "\n\n";
-        cout << "1.Open New Khata\n2.Delete Someone's Khata\n3.Do Transaction\n4.Delete Your Account\n5.Refresh Account\n6.Open Someone's File\n6.Exit\n\n";
-        cout << "Enter Your Choice : ";
+        cout << "\n\n\n\t\t\t\t\t\t\t\t\t    Hello, " << data->name << endl;
+
+        cout << "\n\t\t\t\t\t    UserName - " << data->userName << "\t\tMob. No. : " << data->phoneNumber << "\t\tAmount Remaining : Rs. " << data->amount << endl;
+        // string path = string(data->userName) + "/" + string(data->userName) + ".txt";
+        // ifstream reading(path, ios::in);
+        // person *details = new person();
+        // long i = 1;
+        // reading.read((char*)&(*details), sizeof(*details));
+        // while (!reading.eof()) {
+        //     cout << i++ << ". " << details->name << " --> Rs. " << details->amount << endl;
+        //     reading.read((char*)&(*details), sizeof(*details));
+        // }
+        // reading.close();
+        // cout << "\n\nTotal Amount Remaining : " << data->amount << "\n\n";
+        cout << "\n\n\t\t\t\t\t\t\t\t\t\t-- DASHBOARD --\n\n";
+        cout << "\t\t\t\t\t\t    ------------------------------ MENU ------------------------------\n\n";
+        cout << "\t\t\t\t\t\t\t********************************************************** \n";
+        cout << "\t\t\t\t\t\t\t|                                                        | \n";
+        cout << "\t\t\t\t\t\t\t|             Press 1 To Open New Khata                  | \n";
+        cout << "\t\t\t\t\t\t\t|                                                        | \n";
+        cout << "\t\t\t\t\t\t\t|             Press 2 To Delete Someone's Khata          | \n";
+        cout << "\t\t\t\t\t\t\t|                                                        | \n";
+        cout << "\t\t\t\t\t\t\t|             press 3 To Do Transaction                  | \n";
+        cout << "\t\t\t\t\t\t\t|                                                        | \n";
+        cout << "\t\t\t\t\t\t\t|             press 4 To Delete Your Account             | \n";
+        cout << "\t\t\t\t\t\t\t|                                                        | \n";
+        cout << "\t\t\t\t\t\t\t|             press 5 Refresh Account                    | \n";
+        cout << "\t\t\t\t\t\t\t|                                                        | \n";
+        cout << "\t\t\t\t\t\t\t|             press 6 Open Someone's File                | \n";
+        cout << "\t\t\t\t\t\t\t|                                                        | \n";
+        cout << "\t\t\t\t\t\t\t|             press 7 Print All Khata's                  | \n";
+        cout << "\t\t\t\t\t\t\t|                                                        | \n";
+        cout << "\t\t\t\t\t\t\t|             press 8 To Exit                            | \n";
+        cout << "\t\t\t\t\t\t\t|                                                        | \n";
+        cout << "\t\t\t\t\t\t\t********************************************************** \n";
+        cout << "\n\t\t\t\t\t\t\t\t\t\tEnter Your Choice : ";
         char choice;
         while (true) {
             choice = getch();
             cout << choice;
-            if (!(choice >= '1' && choice <= '7')) {
+            if (choice == '\b' || choice == '\r') continue;
+            if (!(choice >= '1' && choice <= '8')) {
                 cout << "\b \b";
             }
             else break;
@@ -184,7 +217,8 @@ void login(user* data) {
             case '4' : deleteAccount(data); return;
             case '5' : refreshAccount(data); break;
             case '6' : displayPersonRecord(data); break;
-            case '7' : return;
+            case '7' : printAllKhata(data); break;
+            case '8' : return;
         }
     }
 }
@@ -196,11 +230,19 @@ void login(user* data) {
 // ----------------------------------------------------------------------------------------
 
 void openKhata(user* data) {
+    system("cls");
     person* details = new person();
     string path = string(data->userName) + "/" + string(data->userName) + ".txt";
     ofstream writing(path, ios::app);
-    bool res = details->getData();
+    details->getData();
+    bool res = checkExistance(data, details);
     if (res) {
+        system("cls");
+        cout << "\n\t\t\t\t\t\t\t\t\t\tAccount Already Exist";
+        cout << "\n\n\t\t\t\t\t\t\t\t\t\tPress Any Key To Continue...";
+        char ch = getch();
+    }
+    else {
         writing.write((char*)&(*details), sizeof(*details));
         path = string(data->userName) + "/" + (details->name) + string(details->phoneNo) + ".txt";
         ofstream createFile(path);
@@ -215,11 +257,12 @@ void openKhata(user* data) {
 // ----------------------------------------------------------------------------------------
 
 void deleteKhata(user* data) {
+    system("cls");
     string Name, PhoneNumber;
-    cout << "\n\nEnter Name : ";
+    cout << "\n\n\t\t\t\t\t\t\t\t\tEnter Name : ";
     fflush(stdin);
     getline(cin, Name);
-    cout << "Enter Phone Number : ";
+    cout << "\n\n\t\t\t\t\t\t\tEnter Phone Number : ";
     fflush(stdin);
     getline(cin, PhoneNumber);
     bool found = false;
@@ -229,7 +272,7 @@ void deleteKhata(user* data) {
     ofstream writing("temp.txt");
     reading.read((char*)&(*details), sizeof(*details));
     while (!reading.eof()) {
-        if (isEqual(details->name, Name) && details->phoneNo == PhoneNumber) {
+        if ((!isEqual(details->name, Name)) && details->phoneNo == PhoneNumber) {
             found = true;
             system("cls");
             cout << "--> Account Found <--\n\n";
@@ -275,12 +318,26 @@ void deleteKhata(user* data) {
         }
     }
     else {
-        cout << "\n\nAccount Not Found\n\n";
+        system("cls");
+        cout << "\n\t\t\t\t\t\t\t\t\t\tAccount Not Found\n\n";
+        cout << "\n\t\t\t\t\t\t\t\t\t\tPress Any Key To Continue...";
+        char ch = getch();
     }
+    refreshAccount(data);
 }
 
 void doTransaction(user* data) {
-    cout << "1.Search By Name\t\t2.Search By Phone Number\n\nEnter Your Choice : ";
+    system("cls");
+    cout << "\n\n\t\t\t\t\t\t\t\t\tWELCOME TO TRANSACION PAGE\n\n";
+    cout << "\t\t\t\t\t\t    ------------------------------ MENU ------------------------------\n\n";
+    cout << "\t\t\t\t\t\t\t********************************************************** \n";
+    cout << "\t\t\t\t\t\t\t|                                                        | \n";
+    cout << "\t\t\t\t\t\t\t|          Press 1 To Search By Name                     | \n";
+    cout << "\t\t\t\t\t\t\t|                                                        | \n";
+    cout << "\t\t\t\t\t\t\t|          Press 2 To Search By Phone Number             | \n";
+    cout << "\t\t\t\t\t\t\t|                                                        | \n";
+    cout << "\t\t\t\t\t\t\t********************************************************** \n";
+    cout << "\n\t\t\t\t\t\t\t\t\tEnter Your Choice : ";
     char ch;
     while (true) {
         ch = getch();
@@ -309,8 +366,8 @@ void deleteAccount(user* data) {
         string temp = string(data->userName) + "/" + string(details->name) + string(details->phoneNo) + ".txt";
         int status = remove(temp.c_str());
         if (status) {
-            cout << "SOME FILE MAY BE DELETED\n\n";
-            cout << "ERROR OCCURED PRESS ANY KEY TO CONTINUE";
+            cout << "\n\t\t\t\t\t\t\t\t\t\tSOME FILE MAY BE DELETED\n\n";
+            cout << "\n\t\t\t\t\t\t\t\t\t\tERROR OCCURED PRESS ANY KEY TO CONTINUE";
             char ch = getch();
             return;
         }
@@ -325,35 +382,40 @@ void deleteAccount(user* data) {
         return;
     }
     else {
-        ifstream reading2("userName.txt", ios::in);
-        ofstream writing("temp.txt");
-        user *details;
-        reading.read((char*)&(*details), sizeof(*details));
-        while (!reading.eof()) {
-            if (data->userName != details->userName)
+        ifstream reading2;
+        ofstream writing;
+        reading2.open("userName.txt", ios::in);
+        writing.open("temp.txt");
+        user *details = new user();
+        reading2.read((char*)&(*details), sizeof(*details));
+        while (!reading2.eof()) {
+            if (strcmp(data->userName, details->userName)){
                 writing.write((char*)&(*details), sizeof(*details));
+            }
             reading2.read((char*)&(*details), sizeof(*details));
         }
         reading2.close();
         writing.close();
+        char ch = getch();
         reading2.open("temp.txt");
         writing.open("userName.txt");
-        reading2.read((char*)&details, sizeof(*details));
+        reading2.read((char*)&(*details), sizeof(*details));
         while (!reading2.eof()) {
             writing.write((char*)&(*details), sizeof(*details));
-            reading2.read((char*)&details, sizeof(*details));
+            reading2.read((char*)&(*details), sizeof(*details));
         }
         writing.close();
         reading2.close();
-        cout << "\n\nACCOUNT SUCCESSFULLY DELETED\n\n";
-        char ch = getch();
+        cout << "\n\n\t\t\t\t\t\t\t\t\t\tACCOUNT SUCCESSFULLY DELETED\n\n";
+        char ch2 = getch();
     }
 } 
 
 void doOperationByName(user* data) {
+    system("cls");
     string Name;
-    cout << "Enter Name : ";
-    cin >> Name;
+    cout << "\n\n\t\t\t\t\t\t\t\t\tEnter Name : ";
+    getline(cin, Name);
     long count = 0;
     string path = string(data->userName) + "/" + string(data->userName) + ".txt";
     ifstream reading(path, ios::in);
@@ -361,8 +423,9 @@ void doOperationByName(user* data) {
     vector<person> temp;
     reading.read((char*)&(*details), sizeof(*details));
     while (!reading.eof()) {
-        if (!(strcmp(details->name, Name.c_str()))) {
-            cout << ++count << ". Name - " << details->name << "\t Phone No. - " << details->phoneNo << "\t Amount - Rs. " << details->amount << endl; 
+        if (!(isEqual(details->name, Name))) {
+            cout << "\n\t" << ++count << ")  Name- " << details->name << "\t Phone No. - " << details->phoneNo << "\t Amount - " << details->amount << endl;
+            cout << "------------------------------------------------------------------------------------------------------------------------------";
             temp.resize(count);
             temp[count-1].insertData(details->name, details->phoneNo, details->amount);
         }
@@ -382,19 +445,10 @@ void doOperationByName(user* data) {
         doOperation(data, copy);
     }
     else {
-        cout << "\n\nFollowing Data Found";
-        cout << "\n\nEnter Serial Number Or Phone Number To Continue : ";
+        cout << "\n\t\t\t\t\t\t\t\t\t\tFollowing Data Found";
+        cout << "\n\t\t\t\t\t\t\t\t\t\tEnter Serial Number Or Phone Number To Continue : ";
         string input;
         cin >> input;
-        // while (true) {
-        //     char ch = getch();
-        //     if (ch =='\r' && input.size() >= 1) break;
-        //     else if (ch < '0' || ch > '9') continue;
-        //     else if (ch == '\b' && input.size() < 1) continue;
-        //     else if (ch == '\b' && input.size() >= 1) cout << "\b \b";
-        //     cout << ch;
-        //     input.push_back(ch);
-        // }
         if (input.length() < 10) {
             long long index = (long long)(stod(input));
             if (temp.size() >= index) {
@@ -432,17 +486,19 @@ void doOperationByName(user* data) {
 
 void doOperationByPhoneNumber(user* data) {
     string PhoneNumber;
-    cout << "Enter PhoneNumber : ";
+    cout << "\n\n\t\t\t\t\t\t\t\t\tEnter PhoneNumber : ";
     cin >> PhoneNumber;
     long count = 0;
     string path = string(data->userName) + "/" + string(data->userName) + ".txt";
     ifstream reading(path, ios::in);
     person* details = new person();
     vector<person> temp;
+    system("cls");
     reading.read((char*)&(*details), sizeof(*details));
     while (!reading.eof()) {
         if (!strcmp(details->phoneNo, PhoneNumber.c_str())) {
-            cout << ++count << ". Name - " << details->name << "\t Phone No. - " << details->phoneNo << "\t Amount - Rs. " << details->amount << endl; 
+            cout << "\n\t" << ++count << ")  Name- " << details->name << "\t Phone No. - " << details->phoneNo << "\t Amount - Rs." << details->amount << endl;
+            cout << "------------------------------------------------------------------------------------------------------------------------------";
             temp.resize(count);
             temp[count-1].insertData(details->name, details->phoneNo, details->amount);
         }
@@ -463,8 +519,8 @@ void doOperationByPhoneNumber(user* data) {
         doOperation(data, copy);
     }
     else {
-        cout << "\n\nFollowing Data Found";
-        cout << "\n\nEnter Serial Number Or Name To Continue : ";
+        cout << "\n\t\t\t\t\t\t\t\t\t\tFollowing Data Found";
+        cout << "\n\t\t\t\t\t\t\t\t\t\tEnter Serial Number Or Name To Continue : ";
         string input;
         fflush(stdin);
         getline (cin, input);
@@ -479,7 +535,7 @@ void doOperationByPhoneNumber(user* data) {
             for (int i = 0; i < temp.size(); i++) {
                 person* copy = new person();
                 copy->copyData(temp[i]);
-                if (!(strcpy(copy->name, input.c_str()) || strcpy(copy->phoneNo, PhoneNumber.c_str()))) {
+                if (!(isEqual(copy->name, input.c_str()) || strcmp(copy->phoneNo, PhoneNumber.c_str()))) {
                     doOperation(data, copy);
                     check = false;
                     return;
@@ -498,7 +554,19 @@ void doOperationByPhoneNumber(user* data) {
 }
 
 void doOperation(user* data, person* details) {
-    cout << "1.You Want To Add More Items\n2.You Want To Pay\n3.exit\n\nEnter your Choice : ";
+    system("cls");
+    cout << "\n\n\t\t\t\t\t\t\t\t\tWELCOME TO TRANSACTION PAGE\n\n";
+    cout << "\t\t\t\t\t\t    ------------------------------ MENU ------------------------------\n\n";
+    cout << "\t\t\t\t\t\t\t********************************************************** \n";
+    cout << "\t\t\t\t\t\t\t|                                                        | \n";
+    cout << "\t\t\t\t\t\t\t|                    Press 1 To Add More Items           | \n";
+    cout << "\t\t\t\t\t\t\t|                                                        | \n";
+    cout << "\t\t\t\t\t\t\t|                    Press 2 To Pay                      | \n";
+    cout << "\t\t\t\t\t\t\t|                                                        | \n";
+    cout << "\t\t\t\t\t\t\t|                    press 3 To Exit                     | \n";
+    cout << "\t\t\t\t\t\t\t|                                                        | \n";
+    cout << "\t\t\t\t\t\t\t********************************************************** \n";
+    cout << "\n\t\t\t\t\t\t\t\t\t\tEnter Your Choice : ";
     char choice;
     while (true) {
         choice = getch();
@@ -508,18 +576,32 @@ void doOperation(user* data, person* details) {
         }
     }
     if (choice == '1') {
-        cout << "How Many Items You Want To Add : ";
+        cout << "\n\n\t\t\t\t\t\t\t\t\t\tHow Many Items You Want To Add : ";
         int num;
         cin >> num;
         string path = string(data->userName) + "/" + string(details->name) + string(details->phoneNo) + ".txt"; 
         for (int i = 0; i < num; i++) {
-
+            system("cls");
+            cout << "\n\t\t\t\t\t\t\t\t\t\tEnter Details Of " << i+1 << " Item...\n\n\n";
             // ========================== Inserting Item =====================================================
             record* item = new record();
             item->takeInput();
             ofstream writing;
             writing.open(path, ios :: app);
-            writing.write((char*)&(*item), sizeof(*item));
+            if (details->amount < 0) {
+                if (abs(details->amount) < item->itemPrice) {
+                    double temp = item->itemPrice;
+                    item->itemPrice += details->amount;
+                    details->amount = 0;
+                    writing.write((char*)&(*item), sizeof(*item));
+                }
+                else {
+                    details->amount += item->itemPrice;
+                }
+            }
+            else {
+                writing.write((char*)&(*item), sizeof(*item));
+            }
             writing.close();
             // ======================================================================
 
@@ -532,11 +614,10 @@ void doOperation(user* data, person* details) {
             person* temp2 = new person();
             readingTxt.read((char*)&(*temp2), sizeof(*temp2));
             while (!readingTxt.eof()) {
-                if (!(strcmp(temp2->name, details->name) || strcmp(temp2->phoneNo, details->phoneNo))) {
+                if (!(isEqual(temp2->name, details->name) || strcmp(temp2->phoneNo, details->phoneNo))) {
                     double finalamount = temp2->amount;
                     finalamount += item->itemPrice;
                     temp2->amount = finalamount;
-                    cout << temp2->amount << endl;
                 }
                 writingTemp.write((char*)&(*temp2), sizeof(*temp2));
                 readingTxt.read((char*)&(*temp2), sizeof(*temp2));
@@ -596,7 +677,8 @@ void doOperation(user* data, person* details) {
         ifstream reading;
         ofstream writing;
         double amount, copy;
-        cout << "Enter Amount : ";
+        system("cls");
+        cout << "\n\t\t\t\t\t\t\t\t\t\tEnter Amount : ";
         cin >> amount;
         copy = amount;
         string path = string(data->userName) + "/" + string(details->name) + string(details->phoneNo) + ".txt";
@@ -604,6 +686,12 @@ void doOperation(user* data, person* details) {
         writing.open("temp.txt");
         record* item = new record();
         reading.read((char*)&(*item), sizeof(*item));
+        // if (reading.eof()) {
+        //     cout << "\n\t\t\t\t\t\t\t\t\t\tAmount is grater than Amount to pay\n\n";
+        //     cout << "\n\t\t\t\t\t\t\t\t\t\tPress Any Key To Continue...";
+        //     char ch = getch();
+        //     return;
+        // }
         while(!reading.eof()) {
             bool flag = true;
             if (amount > 0){
@@ -622,6 +710,12 @@ void doOperation(user* data, person* details) {
             }
             reading.read((char*)&(*item), sizeof(*item));
         }
+        // if (amount > 0) {
+        //     cout << "\n\t\t\t\t\t\t\t\t\t\tAmount is grater than Amount to pay\n\n";
+        //     cout << "\n\t\t\t\t\t\t\t\t\t\tPress Any Key To Continue...";
+        //     char ch = getch();
+        //     return;
+        // }
         reading.close();
         writing.close();
         reading.open("temp.txt", ios::in);
@@ -640,9 +734,8 @@ void doOperation(user* data, person* details) {
         writing.open("temp.txt");
         reading.read((char*)&(*personDetails), sizeof(*personDetails));
         while (!reading.eof()) {
-            if (!(strcmp(personDetails->name, details->name) || strcmp(personDetails->phoneNo, details->phoneNo))) {
+            if (!(isEqual(personDetails->name, details->name) || strcmp(personDetails->phoneNo, details->phoneNo))) {
                 double temp = personDetails->amount - copy;
-                cout << personDetails->amount << " " << temp << endl;
                 personDetails->amount = temp;
             }
             writing.write((char*)&(*personDetails), sizeof(*personDetails));
@@ -675,11 +768,13 @@ void refreshAccount(user* data) {
     reading.open(path, ios::in);
     reading.read((char*)&(*details), sizeof(*details));
     while (!reading.eof()) {
-        double totalAmount = findTotalAmount(data, details);
-        details->amount = totalAmount;
-        finalAmount += totalAmount;
+        double totalAmount = details->amount; 
+        if ((!check(data, details))) {
+            totalAmount = findTotalAmount(data, details);
+            details->amount = totalAmount;
+        }
         updateRecord(data, details, totalAmount);
-        cout << totalAmount << " " << finalAmount << endl;
+        finalAmount += totalAmount;
         reading.read((char*)&(*details), sizeof(*details));
     }
     reading.close();
@@ -740,7 +835,7 @@ void updateRecord(user* data, person* details, double finalAmount) {
     person* copy = new person();
     reading.read((char*)&(*copy), sizeof(*copy));
     while (!reading.eof()) {
-        if (!(strcmp(details->name, copy->name) || strcmp(details->phoneNo, copy->phoneNo))) {
+        if (!(isEqual(details->name, copy->name) || strcmp(details->phoneNo, copy->phoneNo))) {
             copy->amount = finalAmount;        
         }
         writing.write((char*)&(*copy), sizeof(*copy));
@@ -763,6 +858,8 @@ void updateRecord(user* data, person* details, double finalAmount) {
 }
 
 void displayRecordDetails(user* data, person* details) {
+    system("cls");
+    cout << "\t\tUserName - " << data->userName << "\t\t Phone No. - " << data -> phoneNumber << " \t\t Amount - "<< details->amount << endl << endl; 
     ifstream reading;
     string path = string(data->userName) + "/" + string(details->name) + string(details->phoneNo) + ".txt";
     record* item = new record();
@@ -770,18 +867,27 @@ void displayRecordDetails(user* data, person* details) {
     long int count = 1;
     reading.read((char*)&(*item), sizeof(*item));
     while (!reading.eof()) {
-        cout << count++ << " " << item->date << " " << item->itemName << " " << item->quantity << " " << item->itemPrice << endl;
+        cout << endl << count++ << ")  Date- " << item->date << "\t Item-Name - " << item->itemName << "\t Item-Quantity - " << item->quantity << "\t Price - Rs" << item->itemPrice << endl;
+        cout << "-----------------------------------------------------------------------------------------------------------------------------";
         reading.read((char*)&(*item), sizeof(*item));
     }
 
-    cout << "Press Any Key To Continue...";
+    cout << "\n\nPress Any Key To Continue...";
     char ch = getch();
 }
 
 void displayPersonRecord(user* data) {
     system("cls");
     char choice;
-    cout << "\n1.Find By Name\n2.Find By Phone Number\nEnter Your Choice : ";
+    cout << "\n\n\n\t\t\t\t\t\t    ------------------------------ MENU ------------------------------\n\n";
+    cout << "\t\t\t\t\t\t\t********************************************************** \n";
+    cout << "\t\t\t\t\t\t\t|                                                        | \n";
+    cout << "\t\t\t\t\t\t\t|                    Press 1 To Find By Name             | \n";
+    cout << "\t\t\t\t\t\t\t|                                                        | \n";
+    cout << "\t\t\t\t\t\t\t|                    Press 2 To Find By Phone Number     | \n";
+    cout << "\t\t\t\t\t\t\t|                                                        | \n";
+    cout << "\t\t\t\t\t\t\t********************************************************** \n";
+    cout << "\n\t\t\t\t\t\t\t\t\t\tEnter Your Choice : ";
     fflush(stdin);
     while (true) {
         choice = getch();
@@ -799,9 +905,11 @@ void displayPersonRecord(user* data) {
 }
 
 void findByName(user* data) {
+    system("cls");
     string Name;
-    cout << "Enter Name : ";
-    cin >> Name;
+    cout << "\n\n\t\t\t\t\t\t\t\t\tEnter Name : ";
+    fflush(stdin);
+    getline(cin, Name);
     long count = 0;
     string path = string(data->userName) + "/" + string(data->userName) + ".txt";
     ifstream reading(path, ios::in);
@@ -809,8 +917,10 @@ void findByName(user* data) {
     vector<person> temp;
     reading.read((char*)&(*details), sizeof(*details));
     while (!reading.eof()) {
-        if (!(strcmp(details->name, Name.c_str()))) {
-            cout << ++count << ". Name - " << details->name << "\t Phone No. - " << details->phoneNo << "\t Amount - Rs. " << details->amount << endl; 
+        if (!(isEqual(details->name, Name.c_str()))) {
+             cout << "\n\t" << ++count << ")  Name- " << details->name << "\t Phone No. - " << details->phoneNo << "\t Amount - Rs." << details->amount << endl;
+            cout << "------------------------------------------------------------------------------------------------------------------------------";
+           
             temp.resize(count);
             temp[count-1].insertData(details->name, details->phoneNo, details->amount);
         }
@@ -830,19 +940,10 @@ void findByName(user* data) {
         displayRecordDetails(data, copy);
     }
     else {
-        cout << "\n\nFollowing Data Found";
-        cout << "\n\nEnter Serial Number Or Phone Number To Continue : ";
+        cout << "\n\n\t\t\t\t\t\t\tFollowing Data Found";
+        cout << "\n\n\t\t\t\t\t\t\tEnter Serial Number Or Phone Number To Continue : ";
         string input;
         cin >> input;
-        // while (true) {
-        //     char ch = getch();
-        //     if (ch =='\r' && input.size() >= 1) break;
-        //     else if (ch < '0' || ch > '9') continue;
-        //     else if (ch == '\b' && input.size() < 1) continue;
-        //     else if (ch == '\b' && input.size() >= 1) cout << "\b \b";
-        //     cout << ch;
-        //     input.push_back(ch);
-        // }
         if (input.length() < 10) {
             long long index = (long long)(stod(input));
             if (temp.size() >= index) {
@@ -879,8 +980,9 @@ void findByName(user* data) {
 }
 
 void findByPhoneNumber (user* data) {
+    system("cls");
     string PhoneNumber;
-    cout << "Enter PhoneNumber : ";
+    cout << "\n\n\t\t\t\t\t\t\t\t\tEnter PhoneNumber : ";
     cin >> PhoneNumber;
     long count = 0;
     string path = string(data->userName) + "/" + string(data->userName) + ".txt";
@@ -890,7 +992,9 @@ void findByPhoneNumber (user* data) {
     reading.read((char*)&(*details), sizeof(*details));
     while (!reading.eof()) {
         if (!strcmp(details->phoneNo, PhoneNumber.c_str())) {
-            cout << ++count << ". Name - " << details->name << "\t Phone No. - " << details->phoneNo << "\t Amount - Rs. " << details->amount << endl; 
+            cout << "\n\t" << ++count << ")  Name- " << details->name << "\t Phone No. - " << details->phoneNo << "\t Amount - Rs." << details->amount << endl;
+            cout << "------------------------------------------------------------------------------------------------------------------------------";
+
             temp.resize(count);
             temp[count-1].insertData(details->name, details->phoneNo, details->amount);
         }
@@ -911,8 +1015,8 @@ void findByPhoneNumber (user* data) {
         displayRecordDetails(data, copy);
     }
     else {
-        cout << "\n\nFollowing Data Found";
-        cout << "\n\nEnter Serial Number Or Name To Continue : ";
+        cout << "\n\n\t\t\t\t\t\t\tFollowing Data Found";
+        cout << "\n\n\t\t\t\t\t\t\tEnter Serial Number Or Name To Continue : ";
         string input;
         fflush(stdin);
         getline (cin, input);
@@ -927,7 +1031,7 @@ void findByPhoneNumber (user* data) {
             for (int i = 0; i < temp.size(); i++) {
                 person* copy = new person();
                 copy->copyData(temp[i]);
-                if (!(strcpy(copy->name, input.c_str()) || strcpy(copy->phoneNo, PhoneNumber.c_str()))) {
+                if (!(isEqual(copy->name, input.c_str()) || strcmp(copy->phoneNo, PhoneNumber.c_str()))) {
                     displayRecordDetails(data, copy);
                     check = false;
                     return;
@@ -943,4 +1047,52 @@ void findByPhoneNumber (user* data) {
             }
         }
     }
+}
+
+
+void printAllKhata(user* data) {
+    system("cls");
+    ifstream reading;
+    person details;
+    int count = 0;
+    string path = string(data->userName) + "/" +  string(data->userName) + ".txt";
+    reading.open(path, ios :: in);
+    fflush(stdin);
+    reading.read((char*)(&details), sizeof(details));
+    while (!reading.eof()) {
+        cout << "\n\t" << ++count << ")  Name- " << string(details.name) << "\t Phone No. - " << string(details.phoneNo) << "\t Amount - " << details.amount << endl;
+        cout << "------------------------------------------------------------------------------------------------------------------------------";
+        reading.read((char*)&(details), sizeof(details));
+    }
+    reading.close();
+    cout << "\n\nPress Any Key To Continue...";
+    char ch = getch();
+}
+
+bool checkExistance(user* data, person* details) {
+    ifstream reading;
+    string path = string(data->userName) + "/" + string(data->userName) + ".txt";
+    reading.open(path, ios::in);
+    person* copy = new person();
+    reading.read((char*)&(*copy), sizeof(*copy));
+    while (!reading.eof()) {
+        if (!(isEqual(details->name, copy->name) || strcmp(details->phoneNo, copy->phoneNo))) {
+            reading.close();
+            return true;
+        }
+        reading.read((char*)&(*copy), sizeof(*copy));
+    }
+    reading.close();
+
+    return false;
+}
+
+bool check(user* data, person* details) {
+    ifstream reading;
+    string path = string(data->userName) + "/" + string(details->name) + string(details->phoneNo) + ".txt";
+    reading.open(path);
+    record* temp = new record();
+    reading.read((char*)&(*temp), sizeof(*temp));
+    if (reading.eof()) return true;
+    else return false;
 }

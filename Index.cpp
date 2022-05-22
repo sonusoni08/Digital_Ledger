@@ -21,10 +21,7 @@ int main () {
         }
         if (choice == '1') {
             bool result = verifyLogin();
-            if (result) {
-               
-            }
-            else {
+            if (!result) {
                 system("cls");
                 system("COLOR F0");
                 cout << "\n\n\t\t\t\t\t\t\t\t\t";

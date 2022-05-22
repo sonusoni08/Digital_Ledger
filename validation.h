@@ -2,6 +2,7 @@
 using namespace std;
 
 bool checkPassword(string str) {
+    if (str.length() < 8) return false;
     bool small = false, capital = false, special = false, number = false;
  
     for (int i = 0; i < str.length(); i++) {
@@ -61,19 +62,20 @@ bool phoneNumber(string str) {
 bool isEqual(string str, string str2) {
     int len = str.length();
     int len2 = str2.length();
-    if (len != len2) return false;
+    if (len != len2) return true;
 
     for (int i = 0; i < len; i++) {
-        if (str[i] == str2[i] || str[i] + 32 == str2[i] || str2[i] - 32 == str2[i]) {
+        if ((str[i] == str2[i]) || (char(str[i] + 32) == str2[i]) || (char(str[i] - 32) == str2[i])) {
             continue;
         }
-        return false;
+        return true;
     }
 
-    return true;
+    return false;
 }
 
-bool is_digits(const std::string &str)
+bool is_digits(const string &str)
 {
     return std::all_of(str.begin(), str.end(), ::isdigit); 
 }
+

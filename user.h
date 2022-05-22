@@ -35,8 +35,7 @@ void user :: getData() {
     string Name, PhoneNumber, Password, uName; 
     cout << "\n\n\t\t\t\t\t\t\t\t\tPlease Enter Following Information\n\n";
     cout << "\t\t\t\t\t\t    ------------------------------------------------------------------\n\n";
-    // cout << "\t\t\t\t\t\t\t********************************************************** \n\n";
-    cout << "\t\t\t\t\t\t\t                  -> Create Your User Name :";
+    cout << "\n\t\t\t\t\t\t\t\t\t\t-> Create Your User Name :";
     while (true) {
         fflush(stdin);
         char ch = getch();
@@ -58,10 +57,10 @@ void user :: getData() {
             uName.push_back(ch);
         }
     }
-    cout << "\n\t\t\t\t\t\t\t                  -> Enter Your Name : ";
+    cout << "\n\n\t\t\t\t\t\t\t\t\t\t-> Enter Your Name : ";
     fflush(stdin);
     getline(cin, Name);
-    cout << "\t\t\t\t\t\t\t                  -> Enter Your Phone Number : ";
+    cout << "\n\t\t\t\t\t\t\t\t\t\t-> Enter Your Phone Number : ";
     while (true) {
         fflush(stdin);
         char ch = getch();
@@ -83,7 +82,13 @@ void user :: getData() {
             PhoneNumber.push_back(ch);
         }
     }
-    cout << "\n\t\t\t\t\t\t\t                  -> Create Password : ";
+    cout << "\n\n\t\t\t\t\t\t\t\t\t\t\tPassword Must Contain";
+    cout << "\n\t\t\t\t\t\t\t\t\t\t\t1. A Capital Letter";
+    cout << "\n\t\t\t\t\t\t\t\t\t\t\t2. A Small Letter";
+    cout << "\n\t\t\t\t\t\t\t\t\t\t\t3. A Numberic Character";
+    cout << "\n\t\t\t\t\t\t\t\t\t\t\t4. A Special Character";
+    cout << "\n\t\t\t\t\t\t\t\t\t\t\t5. Length Greater Than 7";
+    cout << "\n\t\n\t\t\t\t\t\t\t\t\t\t-> Create Password : ";
     fflush(stdin);
     while (true) {
         fflush(stdin);
@@ -127,6 +132,7 @@ void user :: printData() {
 } 
 
 bool user :: checkPassword(string str) {
+    if (str.length() < 8) return false;
     bool small = false, capital = false, special = false, number = false;
  
     for (int i = 0; i < str.length(); i++) {
@@ -167,7 +173,7 @@ bool user :: checkPhoneNumber(string str) {
     return false;
 }
 
-bool user :: isDigits(const std::string &str)
+bool user :: isDigits(const string &str)
 {
     return all_of(str.begin(), str.end(), ::isdigit); 
 }
